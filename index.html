@@ -1,192 +1,204 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<title>materials - car</title>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-		<link type="text/css" rel="stylesheet" href="main.css">
-		<style>
-			body {
-				color: #444;
-				background: #eee;
-			}
-			a {
-				color: #08f;
-			}
-			.colorPicker {
-				display: inline-block;
-				margin: 0 10px
-			}
-		</style>
-	</head>
+<head>
+    <title>materials - car</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <link type="text/css" rel="stylesheet" href="css/main.css">
+    <style>
+        body {
+            color: #444;
+            background: #eee;
+        }
 
-	<body>
-		<div id="info">
-			<a href="https://threejs.org" target="_blank" rel="noopener">js</a> car<br/>
-			Ferrari 458 Italia model by <a href="https://sketchfab.com/models/57bf6cc56931426e87494f554df1dab6" target="_blank" rel="noopener">vicent091036</a>
-			<br><br>
-			<span class="colorPicker"><input id="body-color" type="color" value="#ff0000"></input><br/>Body</span>
-			<span class="colorPicker"><input id="details-color" type="color" value="#ffffff"></input><br/>Details</span>
-			<span class="colorPicker"><input id="glass-color" type="color" value="#ffffff"></input><br/>Glass</span>
-		</div>
+        a {
+            color: #08f;
+        }
 
-		<div id="container"></div>
-		
-			</body>
-			
-			<script type="module">
-			import * as THREE from 'three';
-			import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-			import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-			
-			//import { GLTFLoader } from './public/jsm/loaders/GLTFLoader.js';
-			//import * as THREE from './public/build/three.module.js';
+        .colorPicker {
+            display: inline-block;
+            margin: 0 10px
+        }
+    </style>
+</head>
 
-			
-			const scene = new THREE.Scene();
-			const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+<body>
+    <h2>RACE</h2>
+    left = "A" right = "D"
+    <div class="panel">
+        <img src="./image/auto.png" height="50px" />
+    </div>
+    <div id="container"></div>
 
-			const renderer = new THREE.WebGLRenderer();
-			renderer.setSize( window.innerWidth, window.innerHeight );
-			document.body.appendChild( renderer.domElement );
+</body>
 
-			const geometry = new THREE.BoxGeometry();
-			const material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
-			const cube = new THREE.Mesh( geometry, material );
-			//scene.add( cube );
+<script type="module">
+    import * as THREE from 'three';
+    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+    import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
-			camera.position.z = 5;
-			camera.position.y = 2;
-			camera.rotation.x = -0.5;
-			//plane
-			const textureRoadModel = new THREE.TextureLoader().load( 'GameModel/road.jpg' );
-			const materialRoadModel = new THREE.MeshBasicMaterial( { map: textureRoadModel } );
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 
-			const textureCarModel = new THREE.TextureLoader().load( 'GameModel/kol.jpg' );
-			const materialCarModel = new THREE.MeshBasicMaterial( { map: textureCarModel,side: THREE.DoubleSide } );
+    const renderer = new THREE.WebGLRenderer();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
 
-			const geometryPlane = new THREE.PlaneGeometry( 1, 1 );
-			const materialPlane = new THREE.MeshBasicMaterial( {map:textureRoadModel} );
-			
-			var planeroad_ar =[];
-			var start = -4.0;
-			var centerX =0;
-			var moveRoadRudder = 0.009;
-			for(var i=0;i<5;i++){
-				const plane = new THREE.Mesh( geometryPlane, materialPlane );
-				scene.add( plane );
-				plane.scale.x = 4.1; // SCALE
-				plane.scale.y = 2.0; // SCALE
-				plane.scale.z = 2.0; // SCALE
-				//-plane.position.x =1.5;
-				plane.rotation.x = -1.56;
-				plane.position.z += start+2.0*i;
-				plane.position.x = centerX;
-				scene.add( plane );
-				planeroad_ar.push(plane);
-			}
-			
-			
-			//end plane
-			
-			//car
-			const detailsMaterial = new THREE.MeshStandardMaterial( {
-							color: 0x00ff00, metalness: 1.0, roughness: 0.5
-			} );
-			
-			const loader = new GLTFLoader();
+    const geometry = new THREE.BoxGeometry();
+    const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+    const cube = new THREE.Mesh(geometry, material);
+    //scene.add( cube );
 
-			var kol = 'GameModel/car0.glb';
-			var kol = '/lowCar.glb';
-			var carModel=null;
-						var loadModel_ar = ['GameModel/car0.glb','/lowCar.glb'];
-						var readyModel_ar = [];
-						
-						for(var i=0;i<loadModel_ar.length;i++){
-							loader.load( loadModel_ar[i], function ( gltf ) {
-								//scene.add( gltf.scene );
-								carModel = gltf.scene.children[ 0 ];
-								
-								console.log(detailsMaterial+" ===== L ="+carModel.children.length );
-								
-								for(var i=0; i<carModel.children.length;i++){
-								
-									carModel.children[i].material = materialCarModel;
-								}
-								
-								//
-								carModel.material = materialCarModel;
-					
-								
-								carModel.scale.x = 0.4; // SCALE
-								carModel.scale.y = 0.4; // SCALE
-								carModel.scale.z = 0.4; // SCALE
-								
-								carModel.rotation.y = -3.15;
-								
-								readyModel_ar.push(carModel);
-								
-								scene.add( carModel );
-								
-								//const cub = new THREE.Mesh( gltf.scene, material );
-							}, undefined, function ( error ) {
-								console.error( error );
-							} );
-						}
-			//end car
-			
-			function moveRoad() {
-				for(var i=0;i<planeroad_ar.length;i++){
-					planeroad_ar[i].position.z += 0.01;
-					if(planeroad_ar[i].position.z>2.5){
-						planeroad_ar[i].position.z = start;
+    camera.position.z = 5;
+    camera.position.y = 2;
+    camera.rotation.x = -0.5;
+    //plane
+    const textureRoadModel = new THREE.TextureLoader().load('GameModel/road.jpg');
+    const materialRoadModel = new THREE.MeshBasicMaterial({ map: textureRoadModel });
 
-					}
-					planeroad_ar[i].position.x = centerX;
-					console.log("   00===== center ="+centerX);
-				}
-				
-			}
-			
-			function animate() {
-				requestAnimationFrame( animate );
+    const textureCarModel = new THREE.TextureLoader().load('GameModel/kol.jpg');
+    const materialCarModel = new THREE.MeshBasicMaterial({ map: textureCarModel, side: THREE.DoubleSide });
 
-				moveRoad();
-				//cube.rotation.x += 0.01;
-				cube.rotation.y += 0.01;
-				
-				
-				//car
-				if(carModel!=null){
-					
-					camera.lookAt(carModel.position.x,carModel.position.y,carModel.position.z);
+    const geometryPlane = new THREE.PlaneGeometry(1, 1);
+    const materialPlane = new THREE.MeshBasicMaterial({ map: textureRoadModel });
 
-					//carModel.rotation.y += 0.01;
+    var planeroad_ar = [];
+    var start = -4.0;
+    var centerX = 0;
+    var moveRoadRudder = 0.009;
+    for (var i = 0; i < 5; i++) {
+        const plane = new THREE.Mesh(geometryPlane, materialPlane);
+        scene.add(plane);
+        plane.scale.x = 4.1; // SCALE
+        plane.scale.y = 2.0; // SCALE
+        plane.scale.z = 2.0; // SCALE
+        //-plane.position.x =1.5;
+        plane.rotation.x = -1.56;
+        plane.position.z += start + 2.0 * i;
+        plane.position.x = centerX;
+        scene.add(plane);
+        planeroad_ar.push(plane);
+    }
 
-				}
-				//end car
-				
-				renderer.render( scene, camera );
-			};
 
-			animate();
-			
-			
-			
-			window.addEventListener("keydown", function (event) {
-				var playerCarModel = readyModel_ar[0];
-				if(event.key == "a"|| event.key == "ArrowLeft"){
-					console.log ("== = " +event.key);
-					playerCarModel.rotation.y += 0.01;
-					centerX += moveRoadRudder;
-					//moveRoad();
-				}
-				if(event.key == "d"|| event.key == "ArrowRight"){
-					console.log ("== = " +event.key);
-					playerCarModel.rotation.y -= 0.01;
-					centerX -= moveRoadRudder;
-					//moveRoad();
-				}
-			});
-			</script>
+    //end plane
+
+    //car
+    const detailsMaterial = new THREE.MeshStandardMaterial({
+        color: 0x00ff00, metalness: 1.0, roughness: 0.5
+    });
+
+    const loader = new GLTFLoader();
+
+    var kol = 'GameModel/car0.glb';
+    var kol = '/lowCar.glb';
+    var carModel = null;
+    var loadModel_ar = [
+        { name: 'car', url: 'GameModel/car0.glb' },
+        { name: 'car0', url: '/lowCar.glb' },
+        { name: 'tree', url: 'GameModel/Tree.glb' }
+    ];
+    var readyModel_ar = [];
+    let treeModel;
+
+    for (let i = 0; i < loadModel_ar.length; i++) {
+        loader.load(loadModel_ar[i].url, function (gltf) {
+            //scene.add( gltf.scene );
+            carModel = gltf.scene.children[0];
+
+            console.log(" ==== =" + loadModel_ar);
+
+            for (let z = 0; z < carModel.children.length; z++) {
+
+                carModel.children[z].material = materialCarModel;
+            }
+
+            carModel.material = materialCarModel;
+
+            if (loadModel_ar[i].name == 'tree') {
+                console.log(i, "    = t  =", loadModel_ar[i].name);
+                carModel.scale.x = 0.1; // SCALE
+                carModel.scale.y = 0.4; // SCALE
+                carModel.scale.z = 0.1; // SCALE
+                carModel.position.x = 2;
+                treeModel = carModel;
+            } else {
+                carModel.scale.x = 0.4; // SCALE
+                carModel.scale.y = 0.4; // SCALE
+                carModel.scale.z = 0.4; // SCALE
+            }
+            carModel.rotation.y = -3.15;
+
+            readyModel_ar.push(carModel);
+
+            scene.add(carModel);
+
+            //const cub = new THREE.Mesh( gltf.scene, material );
+        }, undefined, function (error) {
+            console.error(error);
+        });
+    }
+    //end car
+
+    function moveRoad() {
+        if (treeModel != undefined) {
+            for (var i = 0; i < planeroad_ar.length; i++) {
+                planeroad_ar[i].position.z += 0.01;
+
+                treeModel.position.z += 0.01;
+
+                if (planeroad_ar[i].position.z > 2.5) {
+                    planeroad_ar[i].position.z = start;
+                    treeModel.position.z = start;
+                }
+                planeroad_ar[i].position.x = centerX;
+                //treeModel.position.z = centerX;
+            }
+        }
+    }
+
+    function animate() {
+        requestAnimationFrame(animate);
+
+        moveRoad();
+        //cube.rotation.x += 0.01;
+        cube.rotation.y += 0.01;
+
+
+        //car
+        if (carModel != null) {
+
+            camera.lookAt(carModel.position.x, carModel.position.y, carModel.position.z);
+
+            //carModel.rotation.y += 0.01;
+
+        }
+        //end car
+
+        renderer.render(scene, camera);
+    };
+
+    animate();
+
+    console.log("add list", readyModel_ar)
+
+    window.addEventListener("keydown", function (event) {
+        var playerCarModel = readyModel_ar[2];
+
+        if (event.key == "a" || event.key == "ArrowLeft") {
+            console.log("== = " + event.key);
+            playerCarModel.rotation.y += 0.01;
+            centerX += moveRoadRudder;
+            //moveRoad();
+        }
+        if (event.key == "d" || event.key == "ArrowRight") {
+            console.log("== = " + event.key);
+            playerCarModel.rotation.y -= 0.01;
+            centerX -= moveRoadRudder;
+            //moveRoad();
+        }
+    });
+
+
+</script>
 </html>
