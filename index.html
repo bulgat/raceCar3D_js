@@ -1,43 +1,192 @@
 <!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8" />
-    <title>3D Games on the Web</title>
-	<meta name="description" content="A series of articles and tutorials with demos to show you how to start creating 3D environments for the Web using the most popular frameworks and libraries." />
-    <link rel="stylesheet" href="res/style.css" />
-</head>
-<body>
+<html lang="en">
+	<head>
+		<title>materials - car</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<link type="text/css" rel="stylesheet" href="main.css">
+		<style>
+			body {
+				color: #444;
+				background: #eee;
+			}
+			a {
+				color: #08f;
+			}
+			.colorPicker {
+				display: inline-block;
+				margin: 0 10px
+			}
+		</style>
+	</head>
 
-<h1>3D Games on the Web</h1><a style="position: absolute; top: 0; right: 0;" href="https://github.com/end3r/MDN-Games-3D/"><img style="border: 0;" src="https://camo.githubusercontent.com/a6677b08c955af8400f44c6298f40e7d19cc5b2d/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677261795f3664366436642e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png"></a>
+	<body>
+		<div id="info">
+			<a href="https://threejs.org" target="_blank" rel="noopener">js</a> car<br/>
+			Ferrari 458 Italia model by <a href="https://sketchfab.com/models/57bf6cc56931426e87494f554df1dab6" target="_blank" rel="noopener">vicent091036</a>
+			<br><br>
+			<span class="colorPicker"><input id="body-color" type="color" value="#ff0000"></input><br/>Body</span>
+			<span class="colorPicker"><input id="details-color" type="color" value="#ffffff"></input><br/>Details</span>
+			<span class="colorPicker"><input id="glass-color" type="color" value="#ffffff"></input><br/>Glass</span>
+		</div>
 
-<img src="res/aframe-shapes.png" alt="A-Frame shapes" />
+		<div id="container"></div>
+		
+			</body>
+			
+			<script type="module">
+			import * as THREE from 'three';
+			import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+			import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+			
+			//import { GLTFLoader } from './public/jsm/loaders/GLTFLoader.js';
+			//import * as THREE from './public/build/three.module.js';
 
-<p>A series of articles and tutorials with demos to show you how to start creating 3D environments for the Web using the most popular frameworks and libraries.</p>
+			
+			const scene = new THREE.Scene();
+			const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
 
-<h2>Demos in this repository</h2>
+			const renderer = new THREE.WebGLRenderer();
+			renderer.setSize( window.innerWidth, window.innerHeight );
+			document.body.appendChild( renderer.domElement );
 
-<ul>
-	<li><a href="http://end3r.github.io/MDN-Games-3D/Three.js/shapes.html">Three.js</a></li>
-	<li><a href="http://end3r.github.io/MDN-Games-3D/Shaders/shaders.html">GLSL Shaders</a></li>
-	<li><a href="http://end3r.github.io/MDN-Games-3D/PlayCanvas/shapes.html">PlayCanvas</a></li>
-	<li><a href="http://end3r.github.io/MDN-Games-3D/Babylon.js/shapes.html">Babylon.js</a></li>
-	<li><a href="http://end3r.github.io/MDN-Games-3D/A-Frame/shapes.html">A-Frame</a></li>
-</ul>
+			const geometry = new THREE.BoxGeometry();
+			const material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
+			const cube = new THREE.Mesh( geometry, material );
+			//scene.add( cube );
 
-<h2>Articles on MDN</h2>
+			camera.position.z = 5;
+			camera.position.y = 2;
+			camera.rotation.x = -0.5;
+			//plane
+			const textureRoadModel = new THREE.TextureLoader().load( 'GameModel/road.jpg' );
+			const materialRoadModel = new THREE.MeshBasicMaterial( { map: textureRoadModel } );
 
-<ul>
-	<li><a href="https://developer.mozilla.org/en-US/docs/Games/Techniques/3D_on_the_web">3D on the Web intro</a></li>
-	<li><a href="https://developer.mozilla.org/en-US/docs/Games/Techniques/3D_on_the_web/Basic_theory">Explaining basic 3D theory</a></li>
-	<li><a href="https://developer.mozilla.org/en-US/docs/Games/Techniques/3D_on_the_web/GLSL_Shaders">GLSL Shaders</a></li>
-	<li><a href="https://developer.mozilla.org/en-US/docs/Games/Techniques/3D_on_the_web/Building_up_a_basic_demo_with_Three.js">Building up a basic demo with Three.js</a></li>
-	<li><a href="https://developer.mozilla.org/en-US/docs/Games/Techniques/3D_on_the_web/Building_up_a_basic_demo_with_PlayCanvas">Building up a basic demo with PlayCanvas</a></li>
-	<li><a href="https://developer.mozilla.org/en-US/docs/Games/Techniques/3D_on_the_web/Building_up_a_basic_demo_with_Babylon.js">Building up a basic demo with Babylon.js</a></li>
-	<li><a href="https://developer.mozilla.org/en-US/docs/Games/Techniques/3D_on_the_web/WebVR">WebVR — Virtual Reality for the Web</a></li>
-	<li><a href="https://developer.mozilla.org/en-US/docs/Games/Techniques/3D_on_the_web/Building_up_a_basic_demo_with_A-Frame">Building up a basic demo with A-Frame</a></li>
-</ul>
+			const textureCarModel = new THREE.TextureLoader().load( 'GameModel/kol.jpg' );
+			const materialCarModel = new THREE.MeshBasicMaterial( { map: textureCarModel,side: THREE.DoubleSide } );
 
-<p>Feel free to add your feedback or send pull requests.</p>
+			const geometryPlane = new THREE.PlaneGeometry( 1, 1 );
+			const materialPlane = new THREE.MeshBasicMaterial( {map:textureRoadModel} );
+			
+			var planeroad_ar =[];
+			var start = -4.0;
+			var centerX =0;
+			var moveRoadRudder = 0.009;
+			for(var i=0;i<5;i++){
+				const plane = new THREE.Mesh( geometryPlane, materialPlane );
+				scene.add( plane );
+				plane.scale.x = 4.1; // SCALE
+				plane.scale.y = 2.0; // SCALE
+				plane.scale.z = 2.0; // SCALE
+				//-plane.position.x =1.5;
+				plane.rotation.x = -1.56;
+				plane.position.z += start+2.0*i;
+				plane.position.x = centerX;
+				scene.add( plane );
+				planeroad_ar.push(plane);
+			}
+			
+			
+			//end plane
+			
+			//car
+			const detailsMaterial = new THREE.MeshStandardMaterial( {
+							color: 0x00ff00, metalness: 1.0, roughness: 0.5
+			} );
+			
+			const loader = new GLTFLoader();
 
-</body>
+			var kol = 'GameModel/car0.glb';
+			var kol = '/lowCar.glb';
+			var carModel=null;
+						var loadModel_ar = ['GameModel/car0.glb','/lowCar.glb'];
+						var readyModel_ar = [];
+						
+						for(var i=0;i<loadModel_ar.length;i++){
+							loader.load( loadModel_ar[i], function ( gltf ) {
+								//scene.add( gltf.scene );
+								carModel = gltf.scene.children[ 0 ];
+								
+								console.log(detailsMaterial+" ===== L ="+carModel.children.length );
+								
+								for(var i=0; i<carModel.children.length;i++){
+								
+									carModel.children[i].material = materialCarModel;
+								}
+								
+								//
+								carModel.material = materialCarModel;
+					
+								
+								carModel.scale.x = 0.4; // SCALE
+								carModel.scale.y = 0.4; // SCALE
+								carModel.scale.z = 0.4; // SCALE
+								
+								carModel.rotation.y = -3.15;
+								
+								readyModel_ar.push(carModel);
+								
+								scene.add( carModel );
+								
+								//const cub = new THREE.Mesh( gltf.scene, material );
+							}, undefined, function ( error ) {
+								console.error( error );
+							} );
+						}
+			//end car
+			
+			function moveRoad() {
+				for(var i=0;i<planeroad_ar.length;i++){
+					planeroad_ar[i].position.z += 0.01;
+					if(planeroad_ar[i].position.z>2.5){
+						planeroad_ar[i].position.z = start;
+
+					}
+					planeroad_ar[i].position.x = centerX;
+					console.log("   00===== center ="+centerX);
+				}
+				
+			}
+			
+			function animate() {
+				requestAnimationFrame( animate );
+
+				moveRoad();
+				//cube.rotation.x += 0.01;
+				cube.rotation.y += 0.01;
+				
+				
+				//car
+				if(carModel!=null){
+					
+					camera.lookAt(carModel.position.x,carModel.position.y,carModel.position.z);
+
+					//carModel.rotation.y += 0.01;
+
+				}
+				//end car
+				
+				renderer.render( scene, camera );
+			};
+
+			animate();
+			
+			
+			
+			window.addEventListener("keydown", function (event) {
+				var playerCarModel = readyModel_ar[0];
+				if(event.key == "a"|| event.key == "ArrowLeft"){
+					console.log ("== = " +event.key);
+					playerCarModel.rotation.y += 0.01;
+					centerX += moveRoadRudder;
+					//moveRoad();
+				}
+				if(event.key == "d"|| event.key == "ArrowRight"){
+					console.log ("== = " +event.key);
+					playerCarModel.rotation.y -= 0.01;
+					centerX -= moveRoadRudder;
+					//moveRoad();
+				}
+			});
+			</script>
 </html>
